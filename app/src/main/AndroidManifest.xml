@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".NextActivity"></activity>
     </application>
 
 </manifest>
