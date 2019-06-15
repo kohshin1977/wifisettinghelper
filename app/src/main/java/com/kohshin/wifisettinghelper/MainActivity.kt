@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-                super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         /**
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
          */
         shutterButton.setOnClickListener {
             // フォルダーを使用する場合、あるかを確認
-            val appDir = File(Environment.getExternalStorageDirectory(), "Camera2Sample")
+            val appDir = File(Environment.getExternalStorageDirectory(), "WiFiSettingHelper")
 
             if (!appDir.exists()) {
                 // なければ、フォルダーを作る
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             try {
-                val filename = "picture.jpg"
+                val filename = "wifi.jpg"
                 var savefile : File? = null
 
                 /**
@@ -97,7 +97,8 @@ class MainActivity : AppCompatActivity() {
                     savefile = File(appDir, filename)
                     val fos = FileOutputStream(savefile)
                     val bitmap: Bitmap = previewView.bitmap
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    getResizedBitmap(bitmap, 300).compress(Bitmap.CompressFormat.PNG, 100, fos)
                     fos.close()
                 }
 
@@ -321,5 +322,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * reduces the size of the image
+     * @param image
+     * @param maxSize
+     * @return
+     */
+    private fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
+        var width = image.getWidth()
+        var height = image.getHeight()
+
+        val bitmapRatio: Float = width.toFloat() / height.toFloat()
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (width / bitmapRatio).toInt()
+        } else {
+            height = maxSize;
+            width = (height * bitmapRatio).toInt()
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true)
+    }
 
 }

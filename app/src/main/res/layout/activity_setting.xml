@@ -12,7 +12,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/button"
             android:scaleType="fitCenter"
-            android:src="@drawable/image2" />
+             />
 
     <Button
             android:id="@+id/button"

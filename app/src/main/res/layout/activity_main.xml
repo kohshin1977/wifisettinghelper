@@ -17,6 +17,7 @@
             android:src="@drawable/shutter_button"
             android:scaleType="fitXY"
             android:background="@null"
-            android:gravity="center"
-            android:foregroundGravity="center_vertical|center" />
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="bottom|center"
+    />
 </FrameLayout>
