@@ -20,4 +20,12 @@
             android:layout_marginBottom="10dp"
             android:layout_gravity="bottom|center"
     />
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:text="300"
+            android:ems="10"
+            android:layout_gravity="top|center"
+            android:id="@+id/editText"/>
 </FrameLayout>
