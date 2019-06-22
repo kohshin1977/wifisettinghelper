@@ -16,6 +16,7 @@
             android:id="@+id/Shutter"
             android:src="@drawable/shutter_button"
             android:scaleType="fitXY"
+            android:visibility="invisible"
             android:background="@null"
             android:layout_marginBottom="10dp"
             android:layout_gravity="bottom|center"

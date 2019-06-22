@@ -11,74 +11,112 @@
             android:layout_above="@+id/button"
             android:scaleType="fitCenter"
     />
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+        <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="9" >
+            <ScrollView
+                    android:id="@+id/scroll_view_ssid"
+                    android:visibility="invisible"
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent">
+                <LinearLayout
+                        android:id="@+id/linear_layout_ssid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+                </LinearLayout>
+            </ScrollView>
+            <ScrollView
+                    android:id="@+id/scroll_view_password"
+                    android:visibility="invisible"
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent">
+                <LinearLayout
+                        android:id="@+id/linear_layout_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+                </LinearLayout>
+            </ScrollView>
+        </FrameLayout>
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:background="@android:color/background_light">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SSID"
-                    android:layout_weight="2"
-                    android:id="@+id/textViewSsid"/>
-            <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:layout_weight="7"
-                    android:id="@+id/editTextSsid"/>
-            <ImageButton
-                    android:id="@+id/imageButtonSsid"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@android:color/background_light">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PASSWORD"
-                    android:layout_weight="2"
-                    android:id="@+id/textViewPass"/>
-
-            <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:layout_weight="7"
-                    android:id="@+id/editTextPass"/>
-            <ImageButton
-                    android:id="@+id/imageButtonPass"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@android:color/background_light">
-            <Button
-                    android:id="@+id/button"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorAccent"
-                    android:text="設定"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@android:color/white" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/background_light">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SSID"
+                        android:layout_weight="2"
+                        android:id="@+id/textViewSsid"/>
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:layout_weight="7"
+                        android:id="@+id/editTextSsid"/>
+                <ImageButton
+                        android:id="@+id/imageButtonSsid"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/background_light">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PASSWORD"
+                        android:layout_weight="2"
+                        android:id="@+id/textViewPass"/>
+
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:layout_weight="7"
+                        android:id="@+id/editTextPass"/>
+                <ImageButton
+                        android:id="@+id/imageButtonPass"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:src="@drawable/ic_arrow_drop_up_black_24dp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/background_light">
+                <Button
+                        android:id="@+id/buttonSet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorAccent"
+                        android:text="設定"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@android:color/white" />
+            </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 </FrameLayout>
 

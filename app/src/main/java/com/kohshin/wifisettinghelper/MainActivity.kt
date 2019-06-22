@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.NumberPicker
@@ -69,14 +70,10 @@ class MainActivity : AppCompatActivity() {
     private val SPACE_BREAKING_POINT = 20.0 / 30.0
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-
 
         /**
          * ストレージ読み書きパーミッションの確認
@@ -88,12 +85,28 @@ class MainActivity : AppCompatActivity() {
             requestStoragePermission()
         }
 
+        shutterButton = findViewById(R.id.Shutter);
+
+        Thread( object: Runnable {
+            override fun run() {
+                //読み込み処理
+                filepath = filesDir.toString() + "/tesseract/"
+
+                tessBaseAPI = TessBaseAPI()
+
+                checkFile(File(filepath + "tessdata/"))
+
+                shutterButton.visibility = View.VISIBLE
+
+                println( "hello" )
+            }
+        }).start()
+
         previewView = findViewById(R.id.mySurfaceView)
         previewView.surfaceTextureListener = surfaceTextureListener
         startBackgroundThread()
 
 
-        shutterButton = findViewById(R.id.Shutter);
 
         sizeBitmap = findViewById(R.id.editText)
 
@@ -126,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (savefile != null) {
                     Log.d("edulog", "Image Saved On: $savefile")
-                    Toast.makeText(this, "Saved: $savefile", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Saved: $savefile", Toast.LENGTH_SHORT).show()
                 }
 
                 //文字読み込み処理
@@ -166,12 +179,6 @@ class MainActivity : AppCompatActivity() {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos.close()
 
-        //読み込み処理
-        filepath = filesDir.toString() + "/tesseract/"
-
-        tessBaseAPI = TessBaseAPI()
-
-        checkFile(File(filepath + "tessdata/"))
 
         tessBaseAPI.init(filepath, DEFAULT_LANGUAGE)
 
