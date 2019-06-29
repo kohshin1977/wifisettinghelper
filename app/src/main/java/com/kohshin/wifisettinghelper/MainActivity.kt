@@ -17,11 +17,13 @@ import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.NumberPicker
-import android.widget.Toast
+import android.widget.*
 import com.googlecode.tesseract.android.TessBaseAPI
+import org.opencv.android.OpenCVLoader
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.core.Size
+import org.opencv.imgproc.Imgproc
 import java.io.*
 import java.nio.channels.FileChannel
 import java.util.*
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private var backgroundThread               : HandlerThread?          = null
     private var cameraDevice                   : CameraDevice?           = null
     private lateinit var captureSession        : CameraCaptureSession
+    private lateinit var progressBar: ProgressBar
 
         val DEFAULT_LANGUAGE = "eng"
 
@@ -75,16 +78,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /**
-         * ストレージ読み書きパーミッションの確認
-         */
-        val writePermission  = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        val readPermission  = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
 
-        if ( (writePermission != PackageManager.PERMISSION_GRANTED) || (readPermission != PackageManager.PERMISSION_GRANTED) ) {
-            requestStoragePermission()
+        if(!OpenCVLoader.initDebug()){
+            Log.i("OpenCV", "Failed");
+        }else{
+            Log.i("OpenCV", "successfully built !");
         }
 
+        progressBar = findViewById(R.id.progressbar)
         shutterButton = findViewById(R.id.Shutter);
 
         Thread( object: Runnable {
@@ -106,14 +107,14 @@ class MainActivity : AppCompatActivity() {
         previewView.surfaceTextureListener = surfaceTextureListener
         startBackgroundThread()
 
-
-
         sizeBitmap = findViewById(R.id.editText)
 
         /**
          * シャッターボタンにイベント生成
          */
         shutterButton.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
+
             // フォルダーを使用する場合、あるかを確認
             if (!appDir.exists()) {
                 // なければ、フォルダーを作る
@@ -142,8 +143,9 @@ class MainActivity : AppCompatActivity() {
 //                    Toast.makeText(this, "Saved: $savefile", Toast.LENGTH_SHORT).show()
                 }
 
-                //文字読み込み処理
+               //文字読み込み処理
                 val result = readCharacter()
+
 
                 //ここで次のインテントに移動
                 val intent = Intent(this@MainActivity, NextActivity::class.java)
@@ -165,6 +167,13 @@ class MainActivity : AppCompatActivity() {
              */
             captureSession.setRepeatingRequest(previewRequest, null, null)
         }
+
+
+    }
+
+    override fun onResume(){
+        super.onResume()
+        progressBar.visibility = View.INVISIBLE
     }
 
     private fun readCharacter(): String{
@@ -172,7 +181,8 @@ class MainActivity : AppCompatActivity() {
         var bitmap = BitmapFactory.decodeFile(loadfile.toString())
 
         //２値化処理
-        bitmap = processBinary(bitmap)
+//        bitmap = processBinary(bitmap)
+        bitmap = grayScale(bitmap)
 
         val savefile = File(appDir, "wifi_binary.png")
         val fos = FileOutputStream(savefile)
@@ -298,6 +308,17 @@ class MainActivity : AppCompatActivity() {
              * カメラ起動
              */
             manager.openCamera(camerId, stateCallback, null)
+
+
+        /**
+         * ストレージ読み書きパーミッションの確認
+         */
+        val writePermission  = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val readPermission  = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if ( (writePermission != PackageManager.PERMISSION_GRANTED) || (readPermission != PackageManager.PERMISSION_GRANTED) ) {
+            requestStoragePermission()
+        }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -451,7 +472,7 @@ class MainActivity : AppCompatActivity() {
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
 
-        private fun processBinary(bitmap: Bitmap) :Bitmap{
+    private fun processBinary(bitmap: Bitmap) :Bitmap{
         //this is the image that is binarized
         val binarizedImage = convertToMutable(bitmap)
         // I will look at each pixel and use the function shouldBeBlack to decide
@@ -469,6 +490,29 @@ class MainActivity : AppCompatActivity() {
         return binarizedImage
     }
 
+
+    private fun grayScale(bitmap: Bitmap) :Bitmap{
+        // リソースから読み込み
+        var bmp = bitmap
+
+        // bmp → OpenCVへ
+        var mat = Mat()
+        Utils.bitmapToMat(bmp, mat) // OpenCVの行列へ
+
+        var mat_gray = Mat()
+//        var mat_gaussian = Mat()
+        var mat_result = Mat()
+
+//        Imgproc.GaussianBlur(mat, mat_gaussian, Size(9.0, 9.0), 8.0, 6.0 )
+        Imgproc.cvtColor(mat, mat_gray, Imgproc.COLOR_RGB2GRAY)  // まずグレースケールへ(明るさだけの形式)
+        Imgproc.adaptiveThreshold(mat_gray, mat_result, 255.0, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 51, 10.0 )
+
+        // OpenCV → bmpへ
+        var output = Bitmap.createBitmap(bmp.width, bmp.height, Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(mat_result, output)
+
+        return output
+    }
 
     /**
      * @param pixel the pixel that we need to decide on

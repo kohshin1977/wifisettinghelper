@@ -24,10 +24,8 @@ import android.widget.Toast
 import android.support.v4.app.ActivityCompat
 import android.widget.LinearLayout
 import android.widget.TextView
-
-
-
-
+import kotlinx.android.synthetic.main.activity_next.*
+import kotlinx.android.synthetic.main.activity_setting.*
 
 
 class NextActivity : AppCompatActivity(){
@@ -35,12 +33,15 @@ class NextActivity : AppCompatActivity(){
     val PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION: Int = 0
 
     val appDir = File(Environment.getExternalStorageDirectory(), "WiFiSettingHelper")
-    val filename = "wifi_binary.png"
+    val filename = "wifi.png"
 
     lateinit var imageViewWifi: ImageView
 
     lateinit var scrollViewSsid: ScrollView
     lateinit var scrollViewPassword: ScrollView
+
+    lateinit var buttonSsid: ImageButton
+    lateinit var buttonPassword: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,26 +96,30 @@ class NextActivity : AppCompatActivity(){
 
             buttonSsidSelected.setOnClickListener{
                 editTextSsid.setText(buttonSsidSelected.text)
+                buttonSsid.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp)
+                scrollViewSsid.visibility = View.INVISIBLE
             }
         }
 
-        val buttonSsid: ImageButton = findViewById(R.id.imageButtonSsid)
+        buttonSsid = findViewById(R.id.imageButtonSsid)
         buttonSsid.setOnClickListener{
             //SSIDの選択
             pressSsid()
         }
 
         //OCR結果の読み込み
-        val ocr_result: List<String> = result.split("\n")
+        var ocr_result: List<String> = result.split("\n")
 
         for( line in ocr_result){
             if(line == ""){
                 continue
             }
 
+            val line_replace_space = line.replace(" ", "")
+
             //SSIDのTextViewをLinearLayoutに追加
             val buttonPasswordSelected: Button = Button(this)
-            buttonPasswordSelected.setText(line)
+            buttonPasswordSelected.setText(line_replace_space)
 
             val textLayoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -128,10 +133,12 @@ class NextActivity : AppCompatActivity(){
 
             buttonPasswordSelected.setOnClickListener{
                 editTextPass.setText(buttonPasswordSelected.text)
+                buttonPassword.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp)
+                scrollViewPassword.visibility = View.INVISIBLE
             }
         }
 
-        val buttonPassword: ImageButton = findViewById(R.id.imageButtonPass)
+        buttonPassword = findViewById(R.id.imageButtonPass)
         buttonPassword.setOnClickListener{
             //PASSWORDの選択
             pressPassword()
@@ -242,26 +249,35 @@ class NextActivity : AppCompatActivity(){
     private fun pressSsid(){
         if(scrollViewSsid.visibility == View.INVISIBLE && scrollViewPassword.visibility == View.INVISIBLE) {
             scrollViewSsid.visibility = View.VISIBLE
+            buttonSsid.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
         }
         else if(scrollViewSsid.visibility == View.VISIBLE && scrollViewPassword.visibility == View.INVISIBLE){
             scrollViewSsid.visibility = View.INVISIBLE
+            buttonSsid.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp)
         }
         else if(scrollViewSsid.visibility == View.INVISIBLE && scrollViewPassword.visibility == View.VISIBLE){
             scrollViewSsid.visibility = View.VISIBLE
             scrollViewPassword.visibility = View.INVISIBLE
+            buttonSsid.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
+            buttonPassword.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp)
         }
     }
 
     private fun pressPassword(){
         if(scrollViewSsid.visibility == View.INVISIBLE && scrollViewPassword.visibility == View.INVISIBLE) {
             scrollViewPassword.visibility = View.VISIBLE
+            buttonPassword.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
         }
         else if(scrollViewSsid.visibility == View.VISIBLE && scrollViewPassword.visibility == View.INVISIBLE){
             scrollViewSsid.visibility = View.INVISIBLE
             scrollViewPassword.visibility = View.VISIBLE
+            buttonSsid.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp)
+            buttonPassword.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
+
         }
         else if(scrollViewSsid.visibility == View.INVISIBLE && scrollViewPassword.visibility == View.VISIBLE){
             scrollViewPassword.visibility = View.INVISIBLE
+            buttonPassword.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp)
         }
     }
 
